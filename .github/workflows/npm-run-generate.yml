@@ -3,14 +3,18 @@ name: fix code styling
 on:
   workflow_call:
     inputs:
+      node_version:
+        default: "18"  # Set a default Node version
+        type: string
+        required: false
       message:
-        default: 🎨 apply generate
+        default: 🎨 Apply code styling [ci skip]
         type: string
         required: false
 
 jobs:
   lint:
-    #  skip test for ci commits
+    # skip test for ci commits
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
 
     runs-on: ubuntu-latest
@@ -19,10 +23,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run npm generate
         run: npm run generate
 
-      - name: Commit linted files
+      - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: ${{ inputs.message }}
