@@ -1,22 +1,12 @@
-name: fix code styling
+name: Generate Static Site
 
 on:
-  workflow_call:
-    inputs:
-      node_version:
-        default: "18"  # Set a default Node version
-        type: string
-        required: false
-      message:
-        default: 🎨 Apply code styling [ci skip]
-        type: string
-        required: false
+  push:
+    branches:
+      - production
 
 jobs:
-  lint:
-    # skip test for ci commits
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,15 +16,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node_version }}
+          node-version: '18.16.0'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm cache clean --force
 
-      - name: Run npm generate
-        run: npm run generate
+      - name: Run npm generate with debug
+        run: |
+          DEBUG=nuxt:* npm run generate
 
-      - name: Commit changes
+      - name: Commit generated files
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: ${{ inputs.message }}
+          commit_message: "Generated static files"
+          branch: deploy_production
