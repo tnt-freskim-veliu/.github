@@ -1,9 +1,20 @@
 name: Generate Static Site
 
 on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: 'Node.js version'
+        default: '18'
+        type: string
+      message:
+        description: 'Commit message for generated files'
+        default: '🎨 Apply code styling [ci skip]'
+        type: string
+
   push:
     branches:
-      - production
+      - production  # Listen for pushes to the production branch
 
 jobs:
   build:
@@ -16,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.16.0'
+          node-version: ${{ inputs.node_version }}
 
       - name: Install dependencies
         run: |
@@ -27,8 +38,8 @@ jobs:
         run: |
           DEBUG=nuxt:* npm run generate
 
-      - name: Commit generated files
+      - name: Commit generated files to production branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Generated static files"
-          branch: deploy_production
+          commit_message: ${{ inputs.message }}
+          branch: production  # Commit the changes to the production branch
