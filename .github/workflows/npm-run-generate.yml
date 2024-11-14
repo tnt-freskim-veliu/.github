@@ -29,6 +29,10 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
 
+      # Set environment variables
+      - name: Set environment variables
+        run: echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env.production
+
       - name: Install dependencies
         run: |
           npm install
@@ -36,7 +40,7 @@ jobs:
 
       - name: Run npm generate with debug
         run: |
-            DEBUG=nuxt:nitro DEBUG=nuxt:generate DEBUG=nuxt:build npm run generate
+          DEBUG=nuxt:* npm run generate
 
       - name: Commit generated files to production branch
         uses: stefanzweifel/git-auto-commit-action@v4
