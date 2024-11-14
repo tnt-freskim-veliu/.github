@@ -36,7 +36,7 @@ jobs:
 
       - name: Run npm generate with debug
         run: |
-          DEBUG=nuxt:* npm run generate
+            DEBUG=nuxt:nitro DEBUG=nuxt:generate DEBUG=nuxt:build npm run generate
 
       - name: Commit generated files to production branch
         uses: stefanzweifel/git-auto-commit-action@v4
