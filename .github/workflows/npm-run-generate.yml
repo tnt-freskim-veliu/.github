@@ -38,10 +38,10 @@ jobs:
           npm install
           npm cache clean --force
 
-      - name: Run npm generate with debug
+      - name: Run npm generate
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
-          DEBUG=nuxt:* npm run generate
+          npm run generate
 
       - name: Commit generated files to production branch
         uses: stefanzweifel/git-auto-commit-action@v4
