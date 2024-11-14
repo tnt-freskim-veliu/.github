@@ -9,7 +9,7 @@ on:
         type: string
       message:
         description: 'Commit message for generated files'
-        default: '🎨 Apply code styling [ci skip]'
+        default: '🎨 Apply code styling [npm run generate]'
         type: string
 
   push:
